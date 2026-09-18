@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FINDIT — Lost & Found SMP Negeri 4 Kalasan</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#f2faf5;
+  color:#24452f;
+}
+
+header{
+  background:#b9e4c9;
+  padding:18px 25px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:10;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.logo{
+  font-size:25px;
+  font-weight:bold;
+}
+
+.school{
+  font-size:13px;
+  color:#42624c;
+  text-align:right;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:25px 18px 100px;
+}
+
+.hero{
+  background:white;
+  border-radius:20px;
+  padding:25px;
+  margin-bottom:20px;
+  box-shadow:0 3px 12px rgba(0,0,0,.06);
+}
+
+.hero h1{
+  font-size:27px;
+  margin-bottom:8px;
+}
+
+.hero p{
+  color:#66806e;
+}
+
+.search-box{
+  margin-top:20px;
+  display:flex;
+  gap:10px;
+}
+
+.search-box input{
+  flex:1;
+  padding:13px 16px;
+  border:1px solid #c9dfd0;
+  border-radius:12px;
+  outline:none;
+}
+
+.search-box button{
+  border:none;
+  background:#75b98b;
+  color:white;
+  padding:0 20px;
+  border-radius:12px;
+  cursor:pointer;
+}
+
+.ai-box{
+  background:#e3f5e9;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.ai-box h3{
+  margin-bottom:7px;
+}
+
+.ai-box p{
+  font-size:13px;
+  color:#63806b;
+  margin-bottom:15px;
+}
+
+.ai-upload{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.ai-upload label{
+  background:#75b98b;
+  color:white;
+  padding:11px 16px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.ai-upload input{
+  display:none;
+}
+
+#aiPreview{
+  display:none;
+  max-width:180px;
+  max-height:180px;
+  border-radius:12px;
+  margin-top:15px;
+}
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:25px 0 15px;
+}
+
+.section-title h2{
+  font-size:20px;
+}
+
+.count{
+  color:#6c8c75;
+  font-size:13px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 3px 12px rgba(0,0,0,.07);
+  cursor:pointer;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+}
+
+.card img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  background:#e9f4ed;
+}
+
+.no-photo{
+  height:220px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#e8f5ec;
+  color:#72917b;
+}
+
+.card-content{
+  padding:16px;
+}
+
+.card-title{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.info{
+  font-size:13px;
+  color:#66806e;
+  line-height:1.6;
+}
+
+.status{
+  display:inline-block;
+  margin-top:12px;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.status.found{
+  background:#d7f2df;
+  color:#2e7b45;
+}
+
+.status.lost{
+  background:#ffe0e0;
+  color:#b54b4b;
+}
+
+.plus{
+  position:fixed;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  border:none;
+  background:#75b98b;
+  color:white;
+  font-size:32px;
+  cursor:pointer;
+  box-shadow:0 5px 15px rgba(0,0,0,.2);
+  z-index:20;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:50;
+  justify-content:center;
+  align-items:center;
+  padding:15px;
+}
+
+.modal-box{
+  background:white;
+  width:100%;
+  max-width:520px;
+  max-height:90vh;
+  overflow-y:auto;
+  border-radius:20px;
+  padding:23px;
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.close{
+  border:none;
+  background:#edf5ef;
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:18px;
+}
+
+.role-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.role-btn{
+  padding:25px 15px;
+  border:none;
+  border-radius:16px;
+  cursor:pointer;
+  background:#e2f4e8;
+  color:#315a3c;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.form-group{
+  margin-bottom:14px;
+}
+
+.form-group label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+  width:100%;
+  padding:12px;
+  border:1px solid #c9dfd0;
+  border-radius:10px;
+  outline:none;
+  background:white;
+}
+
+.form-group textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.submit{
+  width:100%;
+  border:none;
+  background:#75b98b;
+  color:white;
+  padding:13px;
+  border-radius:11px;
+  cursor:pointer;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.photo-preview{
+  width:100%;
+  max-height:220px;
+  object-fit:contain;
+  background:#eef7f0;
+  border-radius:12px;
+  margin-top:10px;
+  display:none;
+}
+
+.detail-img{
+  width:100%;
+  max-height:300px;
+  object-fit:contain;
+  border-radius:15px;
+  background:#edf7ef;
+  margin-bottom:15px;
+}
+
+.detail-info{
+  line-height:1.7;
+  font-size:14px;
+  color:#587160;
+}
+
+.claim-btn{
+  width:100%;
+  border:none;
+  background:#75b98b;
+  color:white;
+  padding:13px;
+  border-radius:11px;
+  margin-top:18px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.disabled-btn{
+  background:#c8d5cb;
+  cursor:not-allowed;
+}
+
+.success{
+  text-align:center;
+  padding:20px;
+}
+
+.success-icon{
+  font-size:55px;
+  margin-bottom:10px;
+}
+
+.loading{
+  text-align:center;
+  padding:40px;
+  color:#6d8874;
+}
+
+.empty{
+  text-align:center;
+  background:white;
+  border-radius:18px;
+  padding:35px;
+  color:#718477;
+}
+
+@media(max-width:600px){
+  header{
+    padding:15px;
+  }
+
+  .school{
+    font-size:10px;
+  }
+
+  .hero h1{
+    font-size:23px;
+  }
+
+  .role-buttons{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">FINDIT</div>
+  <div class="school">
+    Lost & Found<br>
+    SMP Negeri 4 Kalasan
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="hero">
+    <h1>Lost & Found SMP Negeri 4 Kalasan</h1>
+    <p>Temukan kembali barangmu dengan lebih mudah.</p>
+
+    <div class="search-box">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Cari nama, kategori, warna, atau deskripsi..."
+        oninput="renderItems()"
+      >
+
+      <button onclick="renderItems()">Cari</button>
+    </div>
+  </div>
+
+  <div class="ai-box">
+    <h3>🤖 Pemindai Barang</h3>
+
+    <p>
+      Masukkan foto barang untuk membantu menemukan
+      laporan yang memiliki karakteristik serupa.
+    </p>
+
+    <div class="ai-upload">
+
+      <label>
+        📷 Pilih Foto
+        <input
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onchange="scanPhoto(event)"
+        >
+      </label>
+
+      <button
+        type="button"
+        onclick="clearAI()"
+        style="
+          border:none;
+          padding:11px 16px;
+          border-radius:10px;
+          background:white;
+          cursor:pointer;
+        "
+      >
+        Hapus
+      </button>
+
+    </div>
+
+    <img id="aiPreview">
+
+  </div>
+
+  <div class="section-title">
+    <h2>Daftar Barang</h2>
+    <span class="count" id="countText">Memuat...</span>
+  </div>
+
+  <div id="itemsGrid" class="grid">
+    <div class="loading">
+      Memuat laporan...
+    </div>
+  </div>
+
+</div>
+
+<button class="plus" onclick="openRoleModal()">+</button>
+
+
+<!-- PILIH ROLE -->
+<div class="modal" id="roleModal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>Buat Laporan</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('roleModal')"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="role-buttons">
+
+      <button
+        class="role-btn"
+        onclick="openFinder()"
+      >
+        📦<br><br>
+        Saya Menemukan Barang
+      </button>
+
+      <button
+        class="role-btn"
+        onclick="openSearcher()"
+      >
+        🔎<br><br>
+        Saya Kehilangan Barang
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- FORM BARANG DITEMUKAN -->
+<div class="modal" id="finderModal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>Barang Ditemukan</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('finderModal')"
+      >
+        ×
+      </button>
+    </div>
+
+    <form id="finderForm">
+
+      <div class="form-group">
+        <label>Foto Barang</label>
+
+        <input
+          type="file"
+          id="finderPhoto"
+          accept="image/*"
+          capture="environment"
+          onchange="previewFinderPhoto(event)"
+        >
+
+        <img
+          id="finderPreview"
+          class="photo-preview"
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Nama Barang</label>
+
+        <input
+          type="text"
+          id="finderName"
+          placeholder="Contoh: Dompet"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Kategori</label>
+
+        <select id="finderCategory" required>
+          <option value="">Pilih kategori</option>
+          <option>Elektronik</option>
+          <option>Tas</option>
+          <option>Pakaian</option>
+          <option>Alat Tulis</option>
+          <option>Sepatu</option>
+          <option>Kunci</option>
+          <option>Kartu/Identitas</option>
+          <option>Aksesori</option>
+          <option>Barang Pribadi</option>
+          <option>Lainnya</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Warna</label>
+
+        <input
+          type="text"
+          id="finderColor"
+          placeholder="Contoh: Hitam"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Tempat Ditemukan</label>
+
+        <input
+          type="text"
+          id="finderLocation"
+          placeholder="Contoh: Lapangan sekolah"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Lokasi Penyimpanan</label>
+
+        <input
+          type="text"
+          id="finderStorage"
+          placeholder="Contoh: Ruang TU"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Deskripsi</label>
+
+        <textarea
+          id="finderDescription"
+          placeholder="Jelaskan ciri-ciri barang..."
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Nama Pelapor</label>
+
+        <input
+          type="text"
+          id="finderReporter"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Kelas / Kontak</label>
+
+        <input
+          type="text"
+          id="finderContact"
+          placeholder="Contoh: 8A / 08xxxxxxxxxx"
+          required
+        >
+      </div>
+
+      <button
+        class="submit"
+        type="submit"
+      >
+        Upload Barang Ditemukan
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- FORM BARANG HILANG -->
+<div class="modal" id="searcherModal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>Barang Hilang</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('searcherModal')"
+      >
+        ×
+      </button>
+    </div>
+
+    <form id="searcherForm">
+
+      <div class="form-group">
+        <label>Nama Barang</label>
+
+        <input
+          type="text"
+          id="searcherName"
+          placeholder="Contoh: Dompet"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Kategori</label>
+
+        <select id="searcherCategory" required>
+          <option value="">Pilih kategori</option>
+          <option>Elektronik</option>
+          <option>Tas</option>
+          <option>Pakaian</option>
+          <option>Alat Tulis</option>
+          <option>Sepatu</option>
+          <option>Kunci</option>
+          <option>Kartu/Identitas</option>
+          <option>Aksesori</option>
+          <option>Barang Pribadi</option>
+          <option>Lainnya</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Warna</label>
+
+        <input
+          type="text"
+          id="searcherColor"
+          placeholder="Contoh: Hitam"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Tanggal Hilang</label>
+
+        <input
+          type="date"
+          id="searcherDate"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Lokasi terakhir dilihat</label>
+
+        <input
+          type="text"
+          id="searcherLocation"
+          placeholder="Contoh: Perpustakaan"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Deskripsi / Ciri-ciri</label>
+
+        <textarea
+          id="searcherDescription"
+          placeholder="Jelaskan ciri-ciri barang..."
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Nama Pelapor</label>
+
+        <input
+          type="text"
+          id="searcherReporter"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Kelas / Kontak</label>
+
+        <input
+          type="text"
+          id="searcherContact"
+          placeholder="Contoh: 8A / 08xxxxxxxxxx"
+          required
+        >
+      </div>
+
+      <button
+        class="submit"
+        type="submit"
+      >
+        Laporkan Barang Hilang
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- DETAIL -->
+<div class="modal" id="detailModal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>Detail Barang</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('detailModal')"
+      >
+        ×
+      </button>
+    </div>
+
+    <div id="detailContent"></div>
+
+  </div>
+
+</div>
+
+
+<!-- KLAIM -->
+<div class="modal" id="claimModal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>Klaim Barang</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('claimModal')"
+      >
+        ×
+      </button>
+    </div>
+
+    <form id="claimForm">
+
+      <input
+        type="hidden"
+        id="claimItemId"
+      >
+
+      <div class="form-group">
+        <label>Nama Pengklaim</label>
+
+        <input
+          type="text"
+          id="claimName"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Kelas / Kontak</label>
+
+        <input
+          type="text"
+          id="claimContact"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Bukti Kepemilikan</label>
+
+        <textarea
+          id="claimEvidence"
+          placeholder="Jelaskan ciri khusus yang membuktikan barang ini milikmu..."
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Lokasi Terakhir Barang Dilihat</label>
+
+        <input
+          type="text"
+          id="claimLastLocation"
+          placeholder="Contoh: Kelas 8A"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Foto Bukti</label>
+
+        <input
+          type="file"
+          id="claimPhoto"
+          accept="image/*"
+          capture="environment"
+        >
+      </div>
+
+      <button
+        class="submit"
+        type="submit"
+      >
+        Ajukan Klaim
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- SUCCESS -->
+<div class="modal" id="successModal">
+
+  <div class="modal-box">
+
+    <div class="success">
+
+      <div class="success-icon">
+        ✓
+      </div>
+
+      <h2 id="successTitle">
+        Berhasil!
+      </h2>
+
+      <p
+        id="successText"
+        style="margin-top:10px;color:#698070;"
+      ></p>
+
+      <button
+        class="submit"
+        style="margin-top:20px"
+        onclick="
+          closeModal('successModal');
+          loadItems();
+        "
+      >
+        Selesai
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   GOOGLE APPS SCRIPT
+========================= */
+
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxmpQUCnSyRxAlHWRZIUEfb_cRtW9V-BTMBoHKdmdMrU4RSSB0XsmCCa86qaHXaqZfb/exec";
+
+
+let items=[];
+let currentDetail=null;
+
+
+/* =========================
+   MODAL
+========================= */
+
+function openModal(id){
+  document.getElementById(id).style.display="flex";
+}
+
+function closeModal(id){
+  document.getElementById(id).style.display="none";
+}
+
+function openRoleModal(){
+  openModal("roleModal");
+}
+
+function openFinder(){
+  closeModal("roleModal");
+  openModal("finderModal");
+}
+
+function openSearcher(){
+  closeModal("roleModal");
+  openModal("searcherModal");
+}
+
+
+/* =========================
+   FILE BASE64
+========================= */
+
+function fileToBase64(file){
+
+  return new Promise((resolve,reject)=>{
+
+    const reader=new FileReader();
+
+    reader.onload=()=>{
+      resolve(reader.result);
+    };
+
+    reader.onerror=reject;
+
+    reader.readAsDataURL(file);
+
+  });
+
+}
+
+
+/* =========================
+   PREVIEW FOTO
+========================= */
+
+function previewFinderPhoto(event){
+
+  const file=event.target.files[0];
+
+  const preview=
+    document.getElementById("finderPreview");
+
+  if(!file){
+
+    preview.style.display="none";
+
+    return;
+  }
+
+  const reader=new FileReader();
+
+  reader.onload=()=>{
+
+    preview.src=reader.result;
+
+    preview.style.display="block";
+
+  };
+
+  reader.readAsDataURL(file);
+
+}
+
+
+/* =========================
+   AI FOTO
+========================= */
+
+function scanPhoto(event){
+
+  const file=event.target.files[0];
+
+  if(!file)return;
+
+  const preview=
+    document.getElementById("aiPreview");
+
+  const reader=new FileReader();
+
+  reader.onload=()=>{
+
+    preview.src=reader.result;
+
+    preview.style.display="block";
+
+  };
+
+  reader.readAsDataURL(file);
+
+}
+
+
+function clearAI(){
+
+  document.getElementById("aiPreview")
+    .style.display="none";
+
+  document.getElementById("aiPreview")
+    .src="";
+
+}
+
+
+/* =========================
+   LOAD DATA
+========================= */
+
+async function loadItems(){
+
+  const grid=
+    document.getElementById("itemsGrid");
+
+  grid.innerHTML=
+    '<div class="loading">Memuat laporan...</div>';
+
+  try{
+
+    const response=await fetch(
+      SCRIPT_URL+"?t="+Date.now()
+    );
+
+    if(!response.ok){
+      throw new Error("Gagal memuat data");
+    }
+
+    const data=await response.json();
+
+    items=Array.isArray(data)
+      ? data
+      : [];
+
+    renderItems();
+
+  }catch(error){
+
+    console.error(error);
+
+    grid.innerHTML=`
+
+      <div class="empty">
+
+        <h3>Gagal memuat laporan</h3>
+
+        <p style="margin-top:8px">
+          Pastikan Google Apps Script
+          sudah di-deploy sebagai Web App.
+        </p>
+
+      </div>
+
+    `;
+
+    document.getElementById("countText")
+      .textContent="";
+
+  }
+
+}
+
+
+/* =========================
+   FOTO DRIVE
+========================= */
+
+function getPhotoUrl(photo){
+
+  if(!photo)return "";
+
+  let value=String(photo).trim();
+
+  if(value.includes("drive.google.com")){
+
+    let match=
+      value.match(/[-\w]{25,}/);
+
+    if(match){
+
+      return
+        "https://drive.google.com/thumbnail?id="+
+        match[0]+
+        "&sz=w1000";
+
+    }
+
+  }
+
+  if(/^[\w-]{25,}$/.test(value)){
+
+    return
+      "https://drive.google.com/thumbnail?id="+
+      value+
+      "&sz=w1000";
+
+  }
+
+  return value;
+
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+function isFoundStatus(status){
+
+  return String(status || "")
+    .trim()
+    .toLowerCase()==="ditemukan";
+
+}
+
+
+/* =========================
+   RENDER ITEMS
+========================= */
+
+function renderItems(){
+
+  const grid=
+    document.getElementById("itemsGrid");
+
+  const keyword=
+    document.getElementById("searchInput")
+    .value
+    .toLowerCase()
+    .trim();
+
+  const filtered=items.filter(item=>{
+
+    const text=[
+
+      item["Nama Barang"],
+      item["Kategori"],
+      item["Warna"],
+      item["Deskripsi"],
+      item["Lokasi"],
+      item["Jenis"]
+
+    ]
+    .join(" ")
+    .toLowerCase();
+
+    return text.includes(keyword);
+
+  });
+
+
+  document.getElementById("countText")
+    .textContent=
+      filtered.length+" laporan";
+
+
+  if(filtered.length===0){
+
+    grid.innerHTML=`
+
+      <div class="empty">
+
+        Belum ada laporan yang sesuai.
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+
+  grid.innerHTML=
+    filtered.map(item=>{
+
+      const photo=
+        getPhotoUrl(item["Foto"]);
+
+      const found=
+        isFoundStatus(item["Status"]);
+
+
+      return `
+
+        <div
+          class="card"
+          onclick="showDetail(${items.indexOf(item)})"
+        >
+
+          ${
+            photo
+
+            ?
+
+            `
+            <img
+              src="${photo}"
+              alt="Foto barang"
+              onerror="
+                this.style.display='none';
+                this.nextElementSibling.style.display='flex';
+              "
+            >
+
+            <div
+              class="no-photo"
+              style="display:none"
+            >
+              Foto tidak tersedia
+            </div>
+            `
+
+            :
+
+            `
+            <div class="no-photo">
+              Foto tidak tersedia
+            </div>
+            `
+          }
+
+
+          <div class="card-content">
+
+            <div class="card-title">
+              ${escapeHtml(
+                item["Nama Barang"] || "Barang"
+              )}
+            </div>
+
+            <div class="info">
+
+              📁
+              ${escapeHtml(
+                item["Kategori"] || "-"
+              )}
+              <br>
+
+              🎨
+              ${escapeHtml(
+                item["Warna"] || "-"
+              )}
+              <br>
+
+              📍
+              ${escapeHtml(
+                item["Lokasi"] || "-"
+              )}
+
+            </div>
+
+
+            <span
+              class="status
+              ${found ? "found" : "lost"}"
+            >
+
+              ${
+                found
+                ? "✓ Ditemukan"
+                : "✕ Belum Ditemukan"
+              }
+
+            </span>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* =========================
+   DETAIL
+========================= */
+
+function showDetail(index){
+
+  const item=items[index];
+
+  if(!item)return;
+
+  currentDetail=item;
+
+  const photo=
+    getPhotoUrl(item["Foto"]);
+
+  const found=
+    isFoundStatus(item["Status"]);
+
+
+  document.getElementById("detailContent")
+    .innerHTML=`
+
+      ${
+        photo
+
+        ?
+
+        `
+        <img
+          class="detail-img"
+          src="${photo}"
+          onerror="this.style.display='none'"
+        >
+        `
+
+        :
+
+        ""
+      }
+
+
+      <h2>
+        ${escapeHtml(
+          item["Nama Barang"] || "Barang"
+        )}
+      </h2>
+
+
+      <div
+        class="detail-info"
+        style="margin-top:12px"
+      >
+
+        <b>Kategori:</b>
+        ${escapeHtml(
+          item["Kategori"] || "-"
+        )}
+        <br>
+
+        <b>Warna:</b>
+        ${escapeHtml(
+          item["Warna"] || "-"
+        )}
+        <br>
+
+        <b>Tanggal:</b>
+        ${escapeHtml(
+          item["Tanggal"] || "-"
+        )}
+        <br>
+
+        <b>Lokasi:</b>
+        ${escapeHtml(
+          item["Lokasi"] || "-"
+        )}
+        <br>
+
+        ${
+          item["Lokasi Penyimpanan"]
+
+          ?
+
+          `
+          <b>Lokasi Penyimpanan:</b>
+          ${escapeHtml(
+            item["Lokasi Penyimpanan"]
+          )}
+          <br>
+          `
+
+          :
+
+          ""
+        }
+
+
+        <b>Deskripsi:</b>
+        <br>
+
+        ${escapeHtml(
+          item["Deskripsi"] || "-"
+        )}
+
+        <br><br>
+
+        <b>Pelapor:</b>
+        ${escapeHtml(
+          item["Pelapor"] || "-"
+        )}
+
+      </div>
+
+
+      ${
+        /*
+         * INI BAGIAN PENTING:
+         * Kalau status BELUM DITEMUKAN,
+         * maka tombol KLAIM muncul.
+         */
+
+        !found
+
+        ?
+
+        `
+        <button
+          class="claim-btn"
+          onclick="openClaim()"
+        >
+          🔎 Klaim Barang Ini
+        </button>
+        `
+
+        :
+
+        `
+        <button
+          class="claim-btn disabled-btn"
+          disabled
+        >
+          ✓ Barang Sudah Ditemukan
+        </button>
+        `
+      }
+
+    `;
+
+
+  openModal("detailModal");
+
+}
+
+
+/* =========================
+   OPEN CLAIM
+========================= */
+
+function openClaim(){
+
+  if(!currentDetail)return;
+
+  document.getElementById("claimItemId")
+    .value=
+      currentDetail["ID"] || "";
+
+  closeModal("detailModal");
+
+  openModal("claimModal");
+
+}
+
+
+/* =========================
+   SUBMIT CLAIM
+========================= */
+
+document.getElementById("claimForm")
+.addEventListener("submit",async function(e){
+
+  e.preventDefault();
+
+  const button=
+    this.querySelector(
+      "button[type='submit']"
+    );
+
+  button.disabled=true;
+
+  button.textContent="Mengirim...";
+
+
+  try{
+
+    let foto="";
+
+    const file=
+      document.getElementById("claimPhoto")
+      .files[0];
+
+    if(file){
+
+      foto=
+        await fileToBase64(file);
+
+    }
+
+
+    const payload={
+
+      type:"claim",
+
+      itemId:
+        document.getElementById(
+          "claimItemId"
+        ).value,
+
+      nama:
+        document.getElementById(
+          "claimName"
+        ).value,
+
+      kontak:
+        document.getElementById(
+          "claimContact"
+        ).value,
+
+      bukti:
+        document.getElementById(
+          "claimEvidence"
+        ).value,
+
+      lokasiTerakhir:
+        document.getElementById(
+          "claimLastLocation"
+        ).value,
+
+      foto:foto,
+
+      status:"Menunggu Verifikasi"
+
+    };
+
+
+    const response=
+      await fetch(SCRIPT_URL,{
+
+        method:"POST",
+
+        body:JSON.stringify(payload)
+
+      });
+
+
+    const result=
+      await response.json();
+
+
+    if(!result.success){
+
+      throw new Error(
+        result.message ||
+        "Gagal mengirim klaim"
+      );
+
+    }
+
+
+    closeModal("claimModal");
+
+
+    document.getElementById(
+      "successTitle"
+    ).textContent=
+      "Klaim Berhasil Diajukan!";
+
+
+    document.getElementById(
+      "successText"
+    ).textContent=
+      "Klaim kamu sedang menunggu verifikasi guru/admin.";
+
+
+    openModal("successModal");
+
+
+    this.reset();
+
+
+  }catch(error){
+
+    alert(
+      "Klaim gagal dikirim: "+
+      error.message
+    );
+
+
+  }finally{
+
+    button.disabled=false;
+
+    button.textContent=
+      "Ajukan Klaim";
+
+  }
+
+});
+
+
+/* =========================
+   SUBMIT BARANG DITEMUKAN
+========================= */
+
+document.getElementById("finderForm")
+.addEventListener("submit",async function(e){
+
+  e.preventDefault();
+
+  const button=
+    this.querySelector(
+      "button[type='submit']"
+    );
+
+  button.disabled=true;
+
+  button.textContent="Mengupload...";
+
+
+  try{
+
+    let foto="";
+
+    const file=
+      document.getElementById(
+        "finderPhoto"
+      ).files[0];
+
+
+    if(file){
+
+      foto=
+        await fileToBase64(file);
+
+    }
+
+
+    const payload={
+
+      jenis:"Ditemukan",
+
+      namaBarang:
+        document.getElementById(
+          "finderName"
+        ).value,
+
+      kategori:
+        document.getElementById(
+          "finderCategory"
+        ).value,
+
+      warna:
+        document.getElementById(
+          "finderColor"
+        ).value,
+
+      tanggal:
+        new Date()
+        .toISOString()
+        .split("T")[0],
+
+      lokasi:
+        document.getElementById(
+          "finderLocation"
+        ).value,
+
+      lokasiPenyimpanan:
+        document.getElementById(
+          "finderStorage"
+        ).value,
+
+      deskripsi:
+        document.getElementById(
+          "finderDescription"
+        ).value,
+
+      pelapor:
+        document.getElementById(
+          "finderReporter"
+        ).value,
+
+      pelaporKontak:
+        document.getElementById(
+          "finderContact"
+        ).value,
+
+      status:"Ditemukan",
+
+      foto:foto
+
+    };
+
+
+    const response=
+      await fetch(SCRIPT_URL,{
+
+        method:"POST",
+
+        body:JSON.stringify(payload)
+
+      });
+
+
+    const result=
+      await response.json();
+
+
+    if(!result.success){
+
+      throw new Error(
+        result.message ||
+        "Gagal menyimpan"
+      );
+
+    }
+
+
+    closeModal("finderModal");
+
+
+    document.getElementById(
+      "successTitle"
+    ).textContent=
+      "Barang Berhasil Dilaporkan!";
+
+
+    document.getElementById(
+      "successText"
+    ).textContent=
+      "Barang ditemukan berhasil ditambahkan.";
+
+
+    openModal("successModal");
+
+
+    this.reset();
+
+
+    document.getElementById(
+      "finderPreview"
+    ).style.display="none";
+
+
+  }catch(error){
+
+    alert(
+      "Gagal mengupload: "+
+      error.message
+    );
+
+
+  }finally{
+
+    button.disabled=false;
+
+    button.textContent=
+      "Upload Barang Ditemukan";
+
+  }
+
+});
+
+
+/* =========================
+   SUBMIT BARANG HILANG
+========================= */
+
+document.getElementById("searcherForm")
+.addEventListener("submit",async function(e){
+
+  e.preventDefault();
+
+  const button=
+    this.querySelector(
+      "button[type='submit']"
+    );
+
+  button.disabled=true;
+
+  button.textContent="Mengirim...";
+
+
+  try{
+
+    const payload={
+
+      jenis:"Hilang",
+
+      namaBarang:
+        document.getElementById(
+          "searcherName"
+        ).value,
+
+      kategori:
+        document.getElementById(
+          "searcherCategory"
+        ).value,
+
+      warna:
+        document.getElementById(
+          "searcherColor"
+        ).value,
+
+      tanggal:
+        document.getElementById(
+          "searcherDate"
+        ).value,
+
+      lokasi:
+        document.getElementById(
+          "searcherLocation"
+        ).value,
+
+      lokasiPenyimpanan:"",
+
+      deskripsi:
+        document.getElementById(
+          "searcherDescription"
+        ).value,
+
+      pelapor:
+        document.getElementById(
+          "searcherReporter"
+        ).value,
+
+      pelaporKontak:
+        document.getElementById(
+          "searcherContact"
+        ).value,
+
+      /*
+       * BARANG HILANG
+       * = BELUM DITEMUKAN
+       * = BISA DIKLAIM
+       */
+
+      status:"Belum Ditemukan",
+
+      foto:""
+
+    };
+
+
+    const response=
+      await fetch(SCRIPT_URL,{
+
+        method:"POST",
+
+        body:JSON.stringify(payload)
+
+      });
+
+
+    const result=
+      await response.json();
+
+
+    if(!result.success){
+
+      throw new Error(
+        result.message ||
+        "Gagal menyimpan"
+      );
+
+    }
+
+
+    closeModal("searcherModal");
+
+
+    document.getElementById(
+      "successTitle"
+    ).textContent=
+      "Laporan Berhasil Dibuat!";
+
+
+    document.getElementById(
+      "successText"
+    ).textContent=
+      "Laporan barang hilang sudah ditambahkan.";
+
+
+    openModal("successModal");
+
+
+    this.reset();
+
+
+  }catch(error){
+
+    alert(
+      "Gagal mengirim laporan: "+
+      error.message
+    );
+
+
+  }finally{
+
+    button.disabled=false;
+
+    button.textContent=
+      "Laporkan Barang Hilang";
+
+  }
+
+});
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   CLICK OUTSIDE MODAL
+========================= */
+
+window.addEventListener(
+  "click",
+  function(e){
+
+    document
+      .querySelectorAll(".modal")
+      .forEach(modal=>{
+
+        if(e.target===modal){
+
+          modal.style.display="none";
+
+        }
+
+      });
+
+  }
+);
+
+
+/* =========================
+   START
+========================= */
+
+loadItems();
+
+</script>
+
+</body>
+</html>
